@@ -1,0 +1,20 @@
+{% extends 'ecomapp/base.html' %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            {% for user in user_data %}
+            <h3>Detail Information</h3><hr>
+            <p><span class="font-weight-bold">First Name: </span> {{user.first_name}}</p>
+            <p><span class="font-weight-bold">Last Name: </span> {{user.last_name}}</p>
+            <p><span class="font-weight-bold">Email: </span> {{user.email}}</p>
+            <p><span class="font-weight-bold">Status: </span> {{user.is_active}}</p>
+            <p><span class="font-weight-bold">Joined on: </span> {{user.date_joined}}</p>
+            {% endfor %}
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

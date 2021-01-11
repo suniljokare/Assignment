@@ -1,0 +1,106 @@
+{% extends 'ecomapp/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% load cart %}
+<div class="container">
+
+    <h1 class="text-center">Welcome to our ecommerce website. </h1>
+    <hr>
+    <div class="form-group">
+        {% if messages %}
+        <ul class="message">
+            {% for message in messages %}
+            <li>
+                <div class="alert alert-success">{{ message }}</div>
+                </li>
+                {%endfor%}
+            </ul>
+            {%endif%}
+        </div>
+    <div id='products' class="col-lg-9 mx-auto">
+        <div class="row mx-auto">
+            {% for p in product_list %}
+            <div class="card mx-auto mb-3" id={{p.id}} style="width: 18rem;">
+                <img class="card-img-top" src="{{p.image.url}}" alt="Card image cap">
+                <div class="card-body">
+                                 
+                    <h4> <a href="{% url 'productdetail' p.id %}" class="card-title">{{p.title}}</a></h4>
+                    <p class="card-text">Price Rs. <strike><b>{{p.selling_price}}/-</b></strike></p>
+                    <p class="card-text">Discount Price Rs. <b>{{p.Discount}}/-</b></p>
+                   
+                </div>
+
+                <div class="card-footer p-0 no-gutters">
+
+                    {% if p|is_in_cart:request.session.cart %}
+                    <div class="row no-gutters">
+                        <form action="/#{{p.id}}" class="col-2 " method="post">
+                            {% csrf_token %}
+                            <input hidden type="text" name='product' value='{{p.id}}'>
+                            <input hidden type="text" name='remove' value='True'>
+                            <input type="submit" value=" - " class="btn btn-block btn-light border-right">
+                        </form>
+                    <div class="text-center col">{{p|cart_quantity:request.session.cart}} in cart</div>
+                    <form action="/#{{p.id}}" class="col-2 " method="post">
+                        {% csrf_token %}
+                        <input hidden type="text" name='product' value='{{p.id}}'>
+                        
+                        <input type="submit" value=" + " class="btn btn-block btn-light border-right">
+                    </form>
+                    </div>
+                       
+                    {% else %}
+                    <form action="/#{{p.id}}" method="POST" class="btn-block">
+                        {% csrf_token %}
+                        <input hidden type="text" name='product' value='{{p.id}}'>
+                        <input type="submit" class="float-right btn btn-light  form-control"
+                            value="Add To Cart">
+                    </form>
+                    {% endif %}
+
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <nav aria-label="...">
+        <ul class="pagination">
+            {% if product_list.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ product_list.previous_page_number }}">Previous</a>
+
+              </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for i in product_list.paginator.page_range %}
+            {% if i == product_list.number %}
+            <li class="page-item active"><a class="page-link">{{i}}</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if product_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ product_list.next_page_number }}">Next</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+      </nav>
+
+</div>
+
+
+{% endblock %}

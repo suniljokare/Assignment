@@ -1,0 +1,64 @@
+{% extends 'ecomapp/adminbase.html' %}
+
+{% block title %} All Products {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="form-group">
+        {% if messages %}
+        <ul class="message">
+            {% for message in messages %}
+            <li>
+                <div class="alert alert-success">{{ message }}</div>
+                </li>
+                {%endfor%}
+            </ul>
+            {%endif%}
+        </div>
+    <div class="row">
+        
+        <h3>All Products</h3>
+        
+        
+            {% if request.user.is_superuser%}
+            <a  href="{% url 'add_product' %}" class="btn btn-primary">Add Product +</a>
+            
+            {% endif %}
+       
+    </div>
+    
+    <hr>
+    
+    <div class="row">
+        
+        {% for p in allproducts %}
+        <div class="col-md-3">
+            <div class="m-4">
+                <h4>{{p.title}}</h4>
+                <img src="{{p.image.url}}" alt="" class="img-fluid" style="height: 2500; object-fit: cover;">
+                <p class="mt-3">Price: <strike>Rs. {{p.selling_price}}</strike></p>
+                <p>Discount Price Rs. {{p.Discount}}</p>
+                {% if request.user.is_superuser%}
+                <form action="{% url 'delete_product' p.id %}" method="POST">
+                    {% csrf_token %}
+                    
+
+                    
+                    <button   id="Delete Product" class="btn btn-primary">Delete</button>
+                </form>
+                {%else%}
+                <form action="{% url 'update_product' p.id %}" method="GET">
+                    
+                
+                    <button   id="Delete Product" class="btn btn-primary">Update</button>
+                </form>
+               {%endif%}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+   
+</div>
+{% endblock %}
+

@@ -1,0 +1,55 @@
+{% extends 'ecomapp/adminbase.html' %}
+
+{% block title %}Product{% endblock %}
+
+{% block content %}
+<style>
+    .errorlist {
+        color: red;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            {% if request.user.is_superuser%}
+            <h3>Add Product</h3>
+            <div class="form-group">
+                {% if messages %}
+                <ul class="message">
+                    {% for message in messages %}
+                    <li>
+                        <div class="alert alert-success">{{ message }}</div>
+                        </li>
+                        {%endfor%}
+                    </ul>
+                    {%endif%}
+                </div>
+            {%else%}
+            <h3>Update Product</h3>
+            {%endif%}
+            <hr>
+            {% if request.user.is_superuser%}
+            <form action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form.as_p}}
+                
+                <button   class="btn btn-primary">Submit Product</button>
+                
+                
+            </form>
+            {%else%}
+            
+            <form action="{% url 'update_product' id %}" method="POST" enctype="multipart/form-data">
+                
+                {{form.as_p}}
+                
+                <button   class="btn btn-primary">Update Product</button>
+                
+                
+            </form>
+            {%endif%}
+           
+        </div>
+    </div>
+</div>
+{% endblock %}
